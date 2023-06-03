@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+</head>
+<body>
+    <form id="form" method="post" action="http://localhost:8000/production-report/api/submit" enctype="multipart/form-data">
+        <input type="file" name="stakeholder_approval_file">
+        <button id="upload-btn" type="submit">Upload</button>
+        <input type="file" name="it_security_approval_file">
+        <button id="upload-btn" type="submit">Upload</button>
+    </form>
+</body>
+<script>
+    let form = document.querySelector('#form');
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const url = form.action;
+
+        try {
+            const formData = new FormData(form);
+            formData.append('change_request_id', 'sample_cr_id_1111');
+            formData.append('change_title', 'Change Title 2');
+            formData.append('change_overview', 'Change Overview');
+            formData.append('change_initiator', 'Change Initiator');
+            formData.append('is_draft', true);
+            formData.append('uat_sit_feasibility', 'yes');
+            formData.append('start_time_deployment', '03:01:01');
+            formData.append('finish_time_deployment', '2023-02-02T03:06:41.531Z');
+            formData.append('potential_risks', '...');
+            // formData.append('impact_ci', '...');
+            formData.append('expected_results', '...');
+            formData.append('send_to', '...');
+            formData.append('project_and_production_data', JSON.stringify({ 
+                "project_id": "SampleProecta99", 
+                "project_owner": "aA@gmail.com", 	
+                "project_owner_email": "aa@c.com",// from production_status 
+                "pic_releng": "Mas Anwar", 
+                "pic_developer": "...", 
+                "pic_tester": "...", 
+                "pic_sanity": 1,    // from production_status 
+                "type_rfc": "NORMAL",    // from production_status 
+                "date_load_production": "2023-05-04T03:06:41.531Z"
+            }));
+
+            formData.append('implementation_plan_data', JSON.stringify([ 
+                {
+                    "activity_name": "ab", 
+                    "activity_environment": "cd", 
+                    "implementer": "implementer-name", 
+                    "start_time": "", 
+                    "finish_time": "2023-02-02T03:06:41.531Z", 
+                    "comment": "long-text", 
+                    'activity_type_id': 2
+                } 
+
+            ]));
+
+            const response = await fetch(url, {
+                method: "POST",
+                body: formData
+            });
+
+            const response_data = await response.text();
+            console.log(response_data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+</script>
+</html>

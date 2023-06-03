@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+</head>
+<body>
+    <img id="image-placeholder" src="" alt="">
+    <button id="download-btn">Download</button>
+    <a id="download">File will be downloaded here</a>
+
+</body>
+<script>
+    async function fetchImage() {
+        let image_placeholder = document.querySelector('#image-placeholder');
+
+        const response = await fetch(
+            'http://localhost:8000/download-gstorage',
+            {
+                method: 'GET'
+            }
+        );
+
+        console.log(response);
+        console.log(response.headers.get('content-disposition'));
+        console.log(...response.headers);
+
+        let blob = await response.blob();
+        let blobURL = URL.createObjectURL(blob);
+        image_placeholder.src = blobURL;
+        image_placeholder.style.display = 'block';
+    }
+
+    document.querySelector('#download-btn')
+        .onclick = async (e) => {
+            e.preventDefault();
+            console.log('Clicked');
+            const response = await fetch(
+                'http://localhost:8000/production-report/api/other-document-file/sample_cr_id_2',
+            );
+
+            console.log(response.status);
+
+            try {
+                console.log(response);
+                console.log(response.headers.get('content-disposition'));
+                console.log(...response.headers)
+                let blob = await response.blob();
+                console.log('done');
+                console.log('name', blob.filename);;
+                let url_ = await window.URL.createObjectURL(blob);
+                let a = document.querySelector('#download');
+                console.log(url_);
+                a.href = url_;
+            } catch (error) {
+                console.log(error);
+            }
+                
+        
+            
+        }
+
+</script>
+</html>
